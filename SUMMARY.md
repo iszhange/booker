@@ -2,6 +2,9 @@
 
 * [前言](README.md)
 
-- [安装](Install.md)
+- [安装](INSTALL.md)
+
+- [gitbook-cli](GITBOOK-CLI.md)
 
   
+
