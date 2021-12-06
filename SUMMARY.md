@@ -6,5 +6,11 @@
 
 - [gitbook-cli](GITBOOK-CLI.md)
 
+- [如何创建第一本书?](BOOK.md)
+
+- [遇到的问题](QUESTIONS.md)
+
+- [术语/参考资料](GLOSSARY.md)
+
   
 

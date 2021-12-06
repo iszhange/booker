@@ -16,7 +16,7 @@ $ npm install gitbook-cli -g
 
 `gitbook-cli`是GitBook的命令行工具
 
-执行下面命令，查看GitBook版本，以验证是否安装成功
+执行下面命令，查看GitBook版本(会同时安装GitBook)，以验证是否安装成功
 
 ```bash
 $ gitbook -V

@@ -3,5 +3,11 @@
     "description": "",
     "author": "iszhange",
     "language": "zh-hans",
-    "gitbook": "3.2.3"
+    "gitbook": "3.2.3",
+	"plugins": [
+		"toc",
+		"-lunr",
+		"-search",
+		"search-pro"
+	]
 }
