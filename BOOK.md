@@ -58,6 +58,8 @@ mybook/
 
 ## book.json
 
+理论上来说`book.json`可以放在你电脑上的任何位置，对于你本地运行或打包没有任何问题；但如果你通过`GitBook.com`来发布，还是老老实实放到根目录下吧
+
 | 配置项        | 描述                                                         |
 | ------------- | ------------------------------------------------------------ |
 | `root`        | 包含图书所有文件的根目录，`book.json`可以不在根目录中        |
@@ -67,8 +69,176 @@ mybook/
 | `author`      | 作者；在gitbook.com上，这个字段是预填的                      |
 | `isbn`        | 国际标准书号 ISBN                                            |
 | `language`    | 语言类型，[ISO code](https://www.html.am/reference/iso-language-codes.cfm) |
-| `direction`   | 文本阅读顺序，`rtl`|`ltr`，默认值依赖于`language`的值        |
+| `direction`   | 文本阅读顺序，`rtl`                                          |
 | `gitbook`     | 使用的GitBook版本，使用[SemVer](https://semver.org/lang/zh-CN/)规范，接受`><=`条件判断 |
+| `links`       | 链接信息                                                     |
+| styles        | 自定义页面样式                                               |
+| plugins       | 要加载的插件列表                                             |
+| pluginsConfig | 插件的配置                                                   |
+
+**root**
+
+明确指明书籍根目录
+
+```json
+{
+	"root": "./mybook"
+}
+```
+
+**structure**
+
+指定`readme`、`summary`、`glossary`、`languages`对应的文件名
+
+```json
+{
+	"structure": {
+		"readme": "./mybook/README.md",
+        "summary": "./mybook/SUMMARY.md",
+        "glossary": "./mybook/GLOSSARY.md",
+        "languages": "./mybook/LANGS.md"
+	}
+}
+```
+
+**title**
+
+```json
+{
+	"title": "GitBook使用指南"
+}
+```
+
+**description**
+
+```json
+{
+	"description": "本书是关于GitBook使用教程"
+}
+```
+
+**author**
+
+```json
+{
+	"author": "张三"
+}
+```
+
+**isbn**
+
+```json
+{
+	"isbn": "ISBN 7-309-04547-5"
+}
+```
+
+**language**
+
+大多数国家语言都支持，常用的也就几个
+
+`en, zh-hans, zh-tw`
+
+```json
+{
+	"language": "zh-hans"
+}
+```
+
+**direction**
+
+一般来说默认就行，只有两种取值`ltr`或`rtl`
+
+```json
+{
+	"direction": "ltr"
+}
+```
+
+**gitbook**
+
+```json
+{
+	"gitbook": ">=3.2.0"
+}
+```
+
+**links**
+
+添加链接信息
+
+好像只能在左侧导航栏添加
+
+```json
+{
+	"links": {
+		"sidebar": {
+			"GitHub": "https://github.com"
+		}
+	}
+}
+```
+
+**styles**
+
+```json
+"styles": {
+    "website": "styles/website.css",
+    "ebook": "styles/ebook.css",
+    "pdf": "styles/pdf.css",
+    "mobi": "styles/mobi.css",
+    "epub": "styles/epub.css"
+}
+```
+
+**plugins**
+
+1. 新增插件
+
+   将插件名添加到`plugins`数组里，然后执行`gitbook install`来安装新插件
+
+   ```json
+   {
+       "plugins": [
+       	"splitter"
+   	]
+   }
+   ```
+
+2. 去除自带插件
+
+   GitBook默认带有以下插件:
+
+   - highlight
+   - search
+   - sharing
+   - font-settings
+   - livereload
+
+   ```json
+   {
+   	"plugins": [
+   		"-search"
+   	]
+   }
+   ```
+
+**pluginsConfig**
+
+配置插件的配置项
+
+```json
+{
+	"plugins": [
+		"github"
+	],
+	"pluginsConfig": {
+		"github": {
+			"url": "https://github.com"
+		}
+	}
+}
+```
 
 
 
@@ -130,5 +300,55 @@ mybook/
 ----
 
 * [Last part without title](part3/title.md)
+```
+
+## GLOSSARY
+
+添加术语及其定义，GitBook会自动构建索引并突出显示这些术语
+
+`GLOSSARY.md`的格式为`h2`及描述段落的列表
+
+```markdown
+## Term
+Definition for this term
+
+## Another term
+With it's definition, this can contain bold text
+and all other kinds of inline markup ...
+```
+
+
+
+## 页面
+
+**前言**
+
+页面可以包含一个可选前言，用于定义页面的描述，必需放在页面开头，使用上下两条虚线包裹，采用`YAML`格式
+
+```markdown
+---
+description: This is a short description of my page
+---
+
+# The content of my page
+...
+```
+
+**正文**
+
+GitBook推荐使用`Markdown`语法，就不要浪费时间搞别的语法了
+
+```markdown
+# Title of the chapter
+
+This is a great introduction.
+
+## Section 1
+
+Markdown will dictates _most_ of your **book's structure**
+
+## Section 2
+
+...
 ```
 

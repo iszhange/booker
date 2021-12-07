@@ -8,6 +8,7 @@
 		"toc",
 		"-lunr",
 		"-search",
-		"search-pro"
+		"search-pro",
+		"flexible-alerts"
 	]
 }
