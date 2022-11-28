@@ -1,0 +1,10 @@
+{
+    "name": "golang",
+    "forwardPorts": [5454],
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "IS_CHINA": "true"
+        }
+    }
+}
