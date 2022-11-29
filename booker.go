@@ -38,15 +38,15 @@ func init() {
 	// 初始化目录，不存在则创建
 	flag.Parse()
 	fmt.Println(*repositoryDir, *bookDir, *configDir)
-	if !fileExist(*repositoryDir) {
+	if !dirExist(*repositoryDir) {
 		err := os.MkdirAll(*repositoryDir, 0755)
 		printError(err)
 	}
-	if !fileExist(*bookDir) {
+	if !dirExist(*bookDir) {
 		err := os.MkdirAll(*bookDir, 0755)
 		printError(err)
 	}
-	if !fileExist(*configDir) {
+	if !dirExist(*configDir) {
 		err := os.MkdirAll(*configDir, 0755)
 		printError(err)
 	}
@@ -126,7 +126,7 @@ func buildBooks() {
 		return
 	}
 	change := string(output)
-	re, err := regexp.Compile(`books/(\w+).*?`)
+	re, err := regexp.Compile(`(\w+)/.*?`)
 	if err != nil {
 		printError(err)
 		return
@@ -149,34 +149,35 @@ func buildBooks() {
 	// 构建book
 	var bookPath string
 	for _, book := range books {
+		// 跳过不存在的book
 		bookPath = *repositoryDir + PS + book
-		if fileExist(bookPath) {
-			bookPathCmd := "cd " + bookPath + " && "
-			dirs := strings.Split(bookPath, PS)
-			bookName := dirs[len(dirs)-1]
+		if !dirExist(bookPath) {
+			continue
+		}
 
-			log.Println("build book:", bookPath)
-			cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook build")
-			err = cmd.Run()
+		// 构建book
+		log.Println("build book:", bookPath)
+		bookPathCmd := "cd " + bookPath + " && "
+		cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook build")
+		err = cmd.Run()
+		if err != nil {
+			log.Println("faild")
+			continue
+		}
+
+		// 移动构建好的book
+		dstBookPath := *bookDir + PS + book
+		if !dirExist(dstBookPath) {
+			err = os.MkdirAll(dstBookPath, 0755)
 			if err != nil {
-				log.Println("faild")
+				printError(err)
 				continue
 			}
-
-			dstBookPath := *bookDir + PS + bookName
-			if !fileExist(dstBookPath) {
-				err = os.MkdirAll(dstBookPath, 0755)
-				if err != nil {
-					printError(err)
-					continue
-				}
-				cmd = exec.Command("sh", "-c", bookPathCmd+"cp -auv _book/* "+dstBookPath)
-				err = cmd.Run()
-				printError(err)
-			}
 		}
+		cmd = exec.Command("sh", "-c", bookPathCmd+"cp -auv _book/* "+dstBookPath)
+		err = cmd.Run()
+		printError(err)
 	}
-
 }
 
 // 打印错误日志
@@ -196,7 +197,7 @@ func booksUnique(books []string) []string {
 			continue
 		}
 		set[book] = struct{}{}
-		books[i] = book
+		books[i] = strings.Replace(book, "/", "", -1)
 		i++
 	}
 	return books[:i]
@@ -204,12 +205,21 @@ func booksUnique(books []string) []string {
 
 // 判断文件或目录是否存在
 func fileExist(file string) bool {
-	_, err := os.Stat(file)
+	o, err := os.Stat(file)
 	if err != nil {
 		printError(err)
 		return false
 	}
-	return true
+	return !o.IsDir()
+}
+
+// 判断目录是否存在
+func dirExist(dir string) bool {
+	o, err := os.Stat(dir)
+	if err != nil {
+		return false
+	}
+	return o.IsDir()
 }
 
 // hmac sha1
