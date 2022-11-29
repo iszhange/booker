@@ -164,6 +164,8 @@ func buildBooks() {
 			log.Println("faild")
 			continue
 		}
+		cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook install")
+		cmd.Run()
 
 		// 移动构建好的book
 		dstBookPath := *bookDir + PS + book

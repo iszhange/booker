@@ -45,7 +45,7 @@ booker会起个进程监听5454，收到请求后，会校验secret是否正确�
 注：开发环境使用`.devcontainer`下的Dockerfile
 
 ```sh
-docker build --build-arg IS_CHINA=true -t gitbook:v1 .
+docker build --build-arg IS_CHINA=true -t booker:v1 .
 ```
 
 ## 配置文件
@@ -56,3 +56,9 @@ booker的配置都在`config.yml`中
 | ---- | ---- | ---- | ---- |  
 |repository|string| `*` github仓库地址 |  
 |secret|string| `*` webhook密钥 |  
+
+## 启动服务
+
+```sh
+docker run -v {your books dir}:/data/books -v {your config dir}:/data/config -p 5454:5454 --name booker --restart=always -d booker:v1
+```
