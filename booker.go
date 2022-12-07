@@ -24,6 +24,7 @@ const (
 
 type Config struct {
 	Repository string `yaml:"repository"` // git仓库地址
+	Branch     string `yaml:"branch"`     // 分支
 	Secret     string `yaml:"secret"`     // 密钥
 }
 
@@ -107,6 +108,8 @@ func initBookRepository() {
 		f, _ := os.Create(lockFile)
 		defer f.Close()
 		f.Write([]byte("lock"))
+		cmd = exec.Command("sh", "-c", "cd "+*repositoryDir+" && git checkout -b "+config.Branch+" origin/"+config.Branch)
+		cmd.Run()
 		return
 	}
 	log.Println(stderr.String())
@@ -119,7 +122,7 @@ func buildBooks() {
 	repositoryDirCmd := "cd " + *repositoryDir + " && "
 	cmd := exec.Command("sh", "-c", repositoryDirCmd+"git fetch")
 	cmd.Run()
-	cmd = exec.Command("sh", "-c", repositoryDirCmd+"git diff main origin/main --name-only")
+	cmd = exec.Command("sh", "-c", repositoryDirCmd+"git diff "+config.Branch+" origin/"+config.Branch+" --name-only")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		printError(err)
