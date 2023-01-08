@@ -161,14 +161,19 @@ func buildBooks() {
 		// 构建book
 		log.Println("build book:", bookPath)
 		bookPathCmd := "cd " + bookPath + " && "
+		//// 安装插件
+        cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook install")
+		err = cmd.Run()
+        if err != nil {
+            log.Println("gitbook plugins install faild: ", err.Error())
+        }
+        //// 执行构建
 		cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook build")
 		err = cmd.Run()
 		if err != nil {
-			log.Println("faild")
+			log.Println("gitbook build faild: ", err.Error())
 			continue
 		}
-		cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook install")
-		cmd.Run()
 
 		// 移动构建好的book
 		dstBookPath := *bookDir + PS + book
