@@ -159,35 +159,47 @@ func buildBooks() {
 		}
 
 		// 构建book
-		log.Println("build book:", bookPath)
+		log.Println("book:", bookPath)
 		bookPathCmd := "cd " + bookPath + " && "
-		//// 安装插件
+		
+        //// 安装插件
+        log.Println("plugins installing...")
         cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook install")
 		err = cmd.Run()
         if err != nil {
-            log.Println("gitbook plugins install faild: ", err.Error())
+            log.Println("faild: ", err.Error())
         }
+        log.Println("success")
+
         //// 执行构建
+        log.Println("building...")
 		cmd = exec.Command("sh", "-c", bookPathCmd+"gitbook build")
 		err = cmd.Run()
 		if err != nil {
-			log.Println("gitbook build faild: ", err.Error())
+			log.Println("faild: ", err.Error())
 			continue
 		}
+        log.Println("success")
 
 		// 移动构建好的book
+        log.Println("moving...")
 		dstBookPath := *bookDir + PS + book
 		if !dirExist(dstBookPath) {
 			err = os.MkdirAll(dstBookPath, 0755)
 			if err != nil {
-				printError(err)
+				log.Println("faild: ", err.Error())
 				continue
 			}
 		}
 		cmd = exec.Command("sh", "-c", bookPathCmd+"cp -auv _book/* "+dstBookPath)
 		err = cmd.Run()
-		printError(err)
+		if err != nil {
+            log.Println("faild: ", err.Error())
+            continue
+        }
+        log.Println("complete")
 	}
+    log.Println("finished")
 }
 
 // 打印错误日志
